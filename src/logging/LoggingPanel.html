@@ -1,0 +1,172 @@
+<div class="pip-filter-row divider-bottom layout-row pip-search-panel rp0 lp0 pip-filter-search-row flex">
+    <pip-search-row pip-search="$ctrl.localSearch"
+                pip-on-search="$ctrl.onSearch()"
+                xxxng-disabled="$ctrl.transaction.busy()">
+    </pip-search-row>   
+    
+       <div class="flex layout-row layout-align-start-center">
+        <div class="flex"></div>
+        <div class="pip-filter-text">
+            Autorefresh
+        </div>
+        <md-input-container class="md-block" >
+            <md-select class="flex" aria-label="Status" ng-model="$ctrl.refresh"  md-on-close="$ctrl.onRefreshChange()">
+                <md-option ng-value="minutes" ng-repeat="minutes in $ctrl.refreshTimes">
+                    {{::minutes}} sec
+                </md-option>
+            </md-select>
+        </md-input-container>
+    </div>
+</div>
+
+<md-button class="md-fab md-accent md-fab-bottom-right"
+           aria-label="add" ng-click="$ctrl.playStopAutoUpdate()">
+    <md-icon md-svg-icon="icons:play" ng-if="!$ctrl.autoUpdate"></md-icon>
+    <md-icon md-svg-icon="icons:pause" ng-if="$ctrl.autoUpdate"></md-icon>    
+</md-button>
+
+<md-progress-linear md-mode="indeterminate" style="position: absolute;"
+                    ng-show="$ctrl.transaction.busy() && $ctrl.state() != 'progress'"></md-progress-linear>
+
+<table class="table table-striped table-hover bm0 pip-admin-loggings-header"
+       ng-if="$ctrl.pipMedia('gt-sm') && $ctrl.state() != 'empty'">
+    <thead>
+    <tr>
+        <th class="pip-admin-small-td">level</th>
+        <th class="pip-admin-medium-td">Time</th>
+        <th class="pip-admin-medium-td">Correlation ID</th>
+        <th>Message</th>
+        <th class="pip-admin-small-td"></th>
+    </tr>
+    </thead>
+</table>
+
+<div class="pip-admin-loggings pip-scroll-y pip-scroll"
+     ng-class="{'pip-admin-read-error':$ctrl.error}" ng-if="$ctrl.state() != 'empty'">
+    <table class="table table-striped table-hover "
+           ng-if="$ctrl.pipMedia('gt-sm') && $ctrl.loggings && $ctrl.state() != 'empty'"
+           pip-infinite-scroll="$ctrl.readLogging()"
+           pip-scroll-container="'.pip-admin-loggings'" pip-scroll-listen-for-event="windowResized"
+           pip-scroll-distance="0.1"> <!-- -->
+        <tbody>
+        <tr ng-repeat="trace in $ctrl.loggings()">
+            <td class="pip-admin-small-td">
+                <md-icon md-svg-icon="icons:menu" ng-if="trace.level == 6" class="fg-cyan">
+                    <md-tooltip md-visible="showTooltip" md-direction="right">
+                        Trace
+                    </md-tooltip> 
+                </md-icon>
+                <md-icon md-svg-icon="icons:bug" ng-if="trace.level == 5" class="fg-cyan">
+                    <md-tooltip md-visible="showTooltip" md-direction="right">
+                        Debug
+                    </md-tooltip> 
+                </md-icon>
+                <md-icon md-svg-icon="icons:info-circle-outline" ng-if="trace.level == 4" class="fg-cyan">
+                    <md-tooltip md-visible="showTooltip" md-direction="right">
+                        Info
+                    </md-tooltip> 
+                </md-icon>
+                <md-icon md-svg-icon="icons:info-circle" ng-if="trace.level == 3" class="color-warm">
+                    <md-tooltip md-visible="showTooltip" md-direction="right">
+                        Warning
+                    </md-tooltip> 
+                </md-icon>
+                <md-icon md-svg-icon="icons:warn-triangle" ng-if="trace.level == 2" class="color-warn">
+                    <md-tooltip md-visible="showTooltip" md-direction="right">
+                        Error
+                    </md-tooltip> 
+                </md-icon>
+                <md-icon md-svg-icon="icons:warn-star" ng-if="trace.level == 1" class="color-error">
+                    <md-tooltip md-visible="showTooltip" md-direction="right">
+                        Fatal
+                    </md-tooltip> 
+                </md-icon>
+            </td>
+            <td class="pip-admin-medium-td">{{trace.time}}</td>
+            <td class="pip-admin-medium-td">{{trace.correlation_id}}</td>
+            <td class="">
+                <div class="pip-admin-trace-message">{{trace.message}}</div>
+            </td>
+            <td class="pip-admin-small-td tp4 bp4">
+                 <md-button class="md-icon-button" ng-click="$ctrl.onErrorDetails(trace)" 
+                            aria-label="error" ng-if="trace.error">  
+                    <md-icon md-svg-icon="icons:search"></md-icon>
+                 </md-button>
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
+    
+    <md-list class="pip-menu pip-ref-list tp0" 
+             ng-if="($ctrl.pipMedia('xs') || $ctrl.pipMedia('sm')) && $ctrl.state() == 'data'" >
+        <md-list-item class="pip-ref-list-item divider-bottom" md-ink-ripple ng-repeat="trace in $ctrl.loggings">
+            <div class="pip-pic flex-fixed lm16 layout-row layout-align-center-center">
+                 <md-icon md-svg-icon="icons:menu" ng-if="trace.level == 6" class="fg-cyan">
+                    <md-tooltip md-visible="showTooltip" md-direction="right">
+                        Trace
+                    </md-tooltip> 
+                </md-icon>
+                <md-icon md-svg-icon="icons:bug" ng-if="trace.level == 5" class="fg-cyan">
+                    <md-tooltip md-visible="showTooltip" md-direction="right">
+                        Debug
+                    </md-tooltip> 
+                </md-icon>
+                <md-icon md-svg-icon="icons:info-circle-outline" ng-if="trace.level == 4" class="fg-cyan">
+                    <md-tooltip md-visible="showTooltip" md-direction="right">
+                        Info
+                    </md-tooltip> 
+                </md-icon>
+                <md-icon md-svg-icon="icons:info-circle" ng-if="trace.level == 3" class="color-warm">
+                    <md-tooltip md-visible="showTooltip" md-direction="right">
+                        Warning
+                    </md-tooltip> 
+                </md-icon>
+                <md-icon md-svg-icon="icons:warn-triangle" ng-if="trace.level == 2" class="color-warn">
+                    <md-tooltip md-visible="showTooltip" md-direction="right">
+                        Error
+                    </md-tooltip> 
+                </md-icon>
+                <md-icon md-svg-icon="icons:warn-star" ng-if="trace.level == 1" class="color-error">
+                    <md-tooltip md-visible="showTooltip" md-direction="right">
+                        Fatal
+                    </md-tooltip> 
+                </md-icon>
+            </div>
+            <div class="pip-content flex">
+                <div class="text-body2 text-overflow">
+                    {{trace.time}}
+                    <span ng-if="trace.CorrelationId"> • </span>  
+                    {{trace.correlation_id}}</div>
+                <p class="pip-subtitle pip-trace-message">{{trace.message}}</p>
+            </div>
+            <div class="pip-pic rm0">
+                <md-button class="md-icon-button flex-fixed" ng-if="trace.Error"
+                        ng-click="$ctrl.onErrorDetails(trace)" aria-label="error">  
+                        <md-icon md-svg-icon="icons:search"></md-icon>
+                </md-button>
+            </div>
+        </md-list-item>
+    </md-list>
+</div>
+
+<div class="layout-column layout-align-center-center flex pip-admin-empty pip-scroll" 
+     ng-if="$ctrl.state() == 'empty' || $ctrl.state() == 'progress'">
+    <div class="pip-empty" ng-if="$ctrl.state() == 'empty'">
+
+        <img src="images/EmptyState.svg" class="pip-pic">
+        <div class="pip-text">
+            There is no data right now… <br>
+            Try again later or change filter options
+        </div>
+    </div>
+    <div class="pip-empty" ng-show="$ctrl.state() == 'progress'">
+
+        <img src="images/LoadingState.svg" class="pip-pic">
+        <div class="pip-text">
+            Loading traces
+            <md-progress-linear md-mode="indeterminate"  class="tm24"></md-progress-linear>
+        </div>
+        
+    </div>
+</div>

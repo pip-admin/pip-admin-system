@@ -1,0 +1,17 @@
+@import 'logging/Logging';
+@import 'errors/Errors';
+@import 'counters/Counters';
+@import 'events/Events';
+@import 'settings/Settings';
+@import 'statistics/Statistics';
+@import 'common/search/SearchRow';
+
+.pip-admin-break {
+      word-break: break-word;
+}
+
+.pip-admin-empty{
+      height: 100%;
+      height: calc(100% - 48px);
+      overflow-y: auto;
+}

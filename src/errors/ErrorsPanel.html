@@ -1,0 +1,202 @@
+<!--<img src="images/Troubleshooting - Errors.png"  width="100%">-->
+<div class="pip-errors">
+    <div class="pip-page-errors" ng-if="$ctrl.error">
+        <span class="pip-error-text text-overflow color-error flex"> {{::$ctrl.errorText | translate}}</span>
+        <span class="pointer layout-row layout-align-start-center flex-fixed" ng-click="$ctrl.onClickErrorDetails()">
+            <md-icon md-svg-icon="icons:info-circle" class="rm16 color-error"></md-icon>
+            <span class="flex text-body2 color-error">{{:: 'DETAILS' | translate }}</span>
+        </span>
+    </div>
+
+    <div class="pip-filter-row divider-bottom layout-row pip-search-panel rp16 lp0 pip-filter-search-row flex">
+        <pip-search-row pip-search="$ctrl.search" class="pip-search-panel-primary"
+                    pip-on-search="$ctrl.onSearchErrors()"
+                    xxxng-disabled="$ctrl.transaction.busy()">
+        </pip-search-row>        
+        <!--<div class="pip-search layout-row layout-align-start-center pip-search-panel-primary flex">
+            <md-button class="md-icon-button lm0" ng-click="$ctrl.onSearchErrors()" aria-label="search">
+                <md-icon md-svg-icon="icons:search"></md-icon>
+            </md-button>
+
+            <md-input-container md-no-float class="md-block m0 rm16">
+                <input ng-model="$ctrl.search" placeholder="Search..."
+                        ng-change="$ctrl.onSearchErrors()" 
+                        ng-keypress="$ctrl.onKeyPress($event)" ng-blur="$ctrl.onBlur()">
+            </md-input-container>
+            <md-button class="md-icon-button pip-delelete-button"
+                      ng-click="$ctrl.clean()"  aria-label="search" ng-if="$ctrl.search && $ctrl.search != ''">
+                <md-icon md-svg-icon="icons:delete"></md-icon>
+            </md-button>
+            
+        </div>-->
+        <div class="pip-search-panel-secondary layout-row layout-align-start-center">
+            <div class="flex"></div>
+            <div class="pip-filter-text" >
+                Autorefresh
+            </div>
+
+            <md-input-container class="md-block" >
+                <md-select class="flex" aria-label="Status" ng-model="$ctrl.refresh" ng-disabled="$ctrl.updating" md-on-close="$ctrl.onRefreshChange()">
+                    <md-option ng-value="minutes" ng-repeat="minutes in $ctrl.refreshTimes">
+                        {{::minutes}} mins
+                    </md-option>
+                </md-select>
+            </md-input-container>
+        </div>
+    </div>
+
+    <md-button class="md-fab md-accent md-fab-bottom-right " aria-label="add" ng-hide="$ctrl.loading" ng-disabled="$ctrl.updating"
+        ng-click="$ctrl.onRefreshClick()">
+        <md-icon md-svg-icon="icons:reload"></md-icon>
+    </md-button>
+
+    <md-progress-linear md-mode="indeterminate" style="position: absolute;" ng-show="$ctrl.updating"></md-progress-linear>
+    <table class="table table-striped table-hover bm0 pip-errors-header" ng-if="$ctrl._pipMedia('gt-xs') && $ctrl.state == 'data'">
+        <thead>
+            <tr>
+                <th class="pip-big-td">Error</th>
+                <th class="pip-small-medium-td">First</th>
+                <th class="pip-small-medium-td">Last</th>
+                <th class="pip-small-td">Count</th>
+                <th class="pip-small-td p4"></th>
+            </tr>
+        </thead>
+    </table>
+    <div class="pip-errors-container pip-scroll-y pip-scroll" ng-class="{'pip-read-error':$ctrl.error}" ng-if="$ctrl.state == 'data'">
+        <table class="table table-striped table-hover bm0" ng-if="$ctrl._pipMedia('gt-xs')">
+            <tbody>
+                <tr ng-repeat-start="errorType in $ctrl.errors track by $index" ng-click="errorType.collapsed = !errorType.collapsed">
+                    <td class="pip-big-td text-overflow">
+                        <!--{{errorType.items[0].Error.Type}}-->
+                        {{errorType.ErrorType}}
+                    </td>
+                    <td class="pip-small-medium-td text-overflow">{{ errorType.first  }}</td>
+                    <td class="pip-small-medium-td text-overflow">{{ errorType.last }}</td>
+                    <td class="pip-small-td">{{ errorType.count }}</td>
+                    <td class="pip-small-td text-center p4">
+                        <md-button class="md-icon-button m0 p0" aria-label="expand">
+                            <md-icon md-svg-icon="icons:chevron-down" 
+                                ng-class="{'error-expand': errorType.collapsed, 'error-not-expand': !errorType.collapsed }">
+                            </md-icon>
+                        </md-button>
+                        <!--<md-icon md-svg-icon="icons:chevron-down" 
+                                ng-class="{'error-expand': !errorType.collapsed, 'error-not-expand': errorType.collapsed }">
+                        </md-icon>-->
+                        <!--<md-icon md-svg-icon="icons:chevron-up" ng-if="!errorType.collapsed"></md-icon>-->
+                    </td>
+                    <tr ng-repeat-end ng-if="errorType.collapsed">
+                        <td class="p0 error-messages" colspan="5">
+                            <table class="table table-striped table-hover bm0">
+                                <tfoot ng-if="errorType.items.length > $ctrl.showMessagesLimit">
+                                    <tr>
+                                        <td colspan="4">
+                                            <a class="lm16" ng-click="$ctrl.onShowMore(errorType)" 
+                                                ng-class="{'rm16': errorType.show > $ctrl.showMessagesLimit}" 
+                                                ng-show="errorType.show < errorType.items.length">
+                                                Show More ...
+                                            </a>
+                                            <a ng-click="$ctrl.onShowLess(errorType)" ng-show="errorType.show > $ctrl.showMessagesLimit">
+                                                Show Less ...
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+
+                                <tbody>
+                                    <tr ng-repeat="item in errorType.items | limitTo:errorType.show" class="active .error-message"  
+                                        ng-click="$ctrl.onErrorsDetails(item)">
+                                        <td class="pip-big-td text-overflow">
+                                            {{ item.message }}
+                                        </td>
+                                        <td class="pip-small-medium-td text-overflow">
+                                            {{ item.time}}
+                                        </td>
+                                        <td class="pip-small-medium-td text-overflow">
+                                            {{ item.correlation_id }}
+                                        </td>
+                                        <td class="pip-small-td"></td>
+                                        <td class="pip-small-td text-center p4">
+                                            <md-button class="md-icon-button m0 p0" aria-label="show-details">
+                                                <md-icon class="pointer" md-svg-icon="icons:search"></md-icon>
+                                            </md-button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+
+                </tr>
+            </tbody>
+
+        </table>
+        <md-list class="pip-menu pip-ref-list " ng-if="$ctrl._pipMedia('xs')" style="overflow-x: hidden">
+            <md-list-item class="pip-ref-list-item" ng-class="{'divider-bottom': !$last}" md-ink-ripple ng-repeat-start="errorType in $ctrl.errors">
+                <!--<div class="layout-row flex" ng-click="errorType.collapsed = !errorType.collapsed">-->
+                    <div class="pip-content flex" ng-click="errorType.collapsed = !errorType.collapsed">
+                        <div class="pip-title text-overflow">
+                            {{errorType.items[0].Error.Type}} 
+                        </div>
+                        <p class="pip-subtitle text-overflow tm4">
+                            {{errorType.first }} • {{errorType.last}} • {{errorType.count}}
+                        </p>
+                    </div>
+                    <div class="pip-pic flex-fixed" ng-click="errorType.collapsed = !errorType.collapsed">
+                        <md-icon md-svg-icon="icons:chevron-down" 
+                                ng-class="{'error-expand': errorType.collapsed, 'error-not-expand': !errorType.collapsed }">
+                                </md-icon>
+                        <!--<md-icon md-svg-icon="icons:chevron-up" ng-if="!errorType.collapsed"></md-icon>-->
+                    </div>
+                <!--</div>-->
+            </md-list-item>
+            <div ng-repeat-end ng-if="errorType.collapsed">
+                <md-list-item class="pip-ref-list-item error-messages" ng-class="{'divider-bottom': !$last}" md-ink-ripple 
+                        ng-repeat="item in errorType.items  | limitTo:errorType.show">
+                    <!--<div class="layout-row flex" ng-click="$ctrl.onErrorsDetails(item)">-->
+                        <div class="pip-content flex" ng-click="$ctrl.onErrorsDetails(item)">
+                            <div class="pip-title text-overflow">
+                                {{ item.message }}
+                            </div>
+                            <p class="pip-subtitle text-overflow tm4">
+                                {{ item.correlation_id }} <span ng-show="item.correlation_id && item.time"> • </span> {{ item.time }}
+                            </p>
+
+                        </div>
+                    <div class="pip-pic flex-fixed" ng-click="$ctrl.onErrorsDetails(item)">
+                        <md-icon md-svg-icon="icons:search"></md-icon>
+                    </div>
+                </md-list-item>
+                <div class="h48 layout-align-start-center layout-row divider-bottom" ng-if="errorType.items.length > $ctrl.showMessagesLimit">
+                    <a class="lm16"
+                        ng-click="$ctrl.onShowMore(errorType)" 
+                        ng-class="{'rm16': errorType.show > $ctrl.showMessagesLimit}" 
+                        ng-show="errorType.show < errorType.items.length">
+                            Show More ...
+                    </a>
+                    <a ng-click="$ctrl.onShowLess(errorType)" 
+                        ng-show="errorType.show > $ctrl.showMessagesLimit">
+                            Show Less ...
+                    </a>
+                </div>
+            </div>
+        </md-list>
+    </div>
+
+    <div class="layout-column layout-align-center-center flex pip-admin-empty" ng-if="$ctrl.state == 'empty' || $ctrl.state == 'loading'">
+        <div class="pip-empty" ng-if="$ctrl.state == 'empty'">
+
+            <img src="images/EmptyState.svg" class="pip-pic">
+            <div class="pip-text">
+                There are no errors… <br> Try again later <span ng-show="$ctrl.searchQuery"> or change filter options</span>
+            </div>
+        </div>
+        <div class="pip-empty" ng-if="$ctrl.state == 'loading'">
+
+            <img src="images/LoadingState.svg" class="pip-pic">
+            <div class="pip-text">
+                Loading errors
+                <md-progress-linear md-mode="indeterminate" class="tm24"></md-progress-linear>
+            </div>
+        </div>
+    </div>
+</div>

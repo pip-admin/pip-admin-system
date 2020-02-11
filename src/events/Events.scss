@@ -1,0 +1,11 @@
+pip-events-panel {
+    position: relative;
+    display: block;
+    height: 100%;
+    width: 100%;
+}
+
+.pip-admin-events {
+    height: calc(100% - 48px - 48px);
+    overflow-y: auto;
+}

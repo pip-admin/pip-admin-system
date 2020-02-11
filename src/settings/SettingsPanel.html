@@ -1,0 +1,295 @@
+
+<div class="pip-main-menu pip-settings" 
+     ng-class="{'pip-single-content': $ctrl.details}" 
+     ng-if="$ctrl.pipMedia('gt-sm')"> <!-- pip-single-content -->
+    <div class="pip-menu">
+        <div class="pip-filter-row layout-row pip-search-panel rp0 lp0 pip-filter-search-row flex">
+            <pip-search-row pip-search="$ctrl.search"
+                pip-on-search="$ctrl.onSearch()"
+                xxxng-disabled="$ctrl.transaction.busy()">
+            </pip-search-row> 
+        </div>
+        <div ng-show="$ctrl.error" class="pip-page-errors">
+            <span class="pip-error-text color-error flex"> {{$ctrl.error}}</span>
+            <md-icon md-svg-icon="icons:warn-circle" class="color-error"></md-icon>
+        </div>
+        <div class="pip-list-container  pip-scroll" style=" height: calc(100% - 48px);"
+             ng-class="{'pip-menu-empty': $ctrl.state == 'empty'}">
+            <md-list class="pip-simple-list tp0"
+                     pip-selected="$ctrl.selectIndex"
+                     pip-select="$ctrl.selectItem($event.index)">
+                <md-list-item class="pip-simple-list-item pip-selectable {{ $ctrl.selectIndex == $index ? 'selected' : '' }}" 
+                              md-ink-ripple ng-repeat="section in $ctrl.settingsSections" ng-show="!section.hide">
+                    <p class="pip-title text-body2">{{ section.name }}</p>
+                </md-list-item>
+            </md-list>
+        </div>
+    </div>
+
+    <div class="pip-content-container">
+        <div>
+            <pip-document>
+                <div class="pip-header p0" ng-if="$ctrl.pipMedia('gt-md') && $ctrl.state == 'data'">
+                     <table class="table table-striped table-hover bm0">
+                        <thead>
+                            <tr>
+                                <th class="lp16">Key</th>
+                                <th class="pip-settings-value" >Value</th>
+                                <th style="width: 48px"></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="pip-body p0 layout-column layout-align-center-center" ng-if="$ctrl.pipMedia('gt-md') && $ctrl.state != 'data'">
+                    <div class="layout-column layout-align-center-center flex pip-empty pip-scroll w-stretch" 
+                        ng-if="$ctrl.state == 'empty'">
+                        <div class="pip-empty">
+                            <img src="images/EmptyState.svg" class="pip-pic">
+                            <div class="pip-text">
+                                 There is no data right now… <br>
+                                 Try again later or change filter options
+                            </div>
+                        </div>
+                    </div>
+                      <div class="layout-column layout-align-center-center flex pip-empty pip-scroll w-stretch" 
+                        ng-if="$ctrl.state == 'progress'">
+                        <div class="pip-empty">
+                            <img src="images/LoadingState.svg" class="pip-pic">
+                            <div class="pip-text">
+                                Loading settings
+                                <md-progress-linear md-mode="indeterminate" class="tm24"></md-progress-linear>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pip-body p0" ng-if="$ctrl.state == 'data'">
+                    <table class="table table-striped table-hover" style="margin-bottom: 72px" ng-if="$ctrl.pipMedia('gt-md')">
+                        <tbody>
+                            <tr ng-repeat="(key, value) in $ctrl.settings[$ctrl.selectIndex]"
+                                ng-if="key != 'toJSON'">
+                                <td class="pip-settings-key lp16" ng-bind-html="key"> </td>
+                                 <td class="pip-settings-value" >
+                                    <div class="pip-settings-key " ng-if="!key.includes('Utc')">
+                                    {{ value }}
+                                    </div>
+                                    <div class="pip-settings-key " ng-if="key.includes('Utc')">
+                                    {{ value }}
+                                    </div>
+                                    
+                                </td>
+                                <td class="tp4 bp4" style="width: 48px">
+                                     <md-menu>
+                                        <md-button class="md-icon-button" ng-click="$mdOpenMenu()"
+                                                    aria-label="vdots">
+                                            <md-icon md-menu-origin md-svg-icon="icons:vdots"></md-icon>
+                                        </md-button>
+                                        <md-menu-content width="3">
+                                            <md-menu-item>
+                                            <md-button ng-click="$ctrl.updateKey(key, value)" aria-label="update">
+                                                Update
+                                            </md-button>
+                                            </md-menu-item>
+                                            <md-menu-item ng-click="$ctrl.openDeleteKeyDialog(key, value)">
+                                            <md-button aria-label="delete">
+                                                Delete
+                                            </md-button>
+                                            </md-menu-item>
+                                        </md-menu-content>
+                                    </md-menu>
+                                </td>
+                            </tr>
+                        </tbody>
+                    
+                    </table> 
+
+                    <div ng-if="$ctrl.pipMedia('md') && $ctrl.state == 'data' "> 
+
+                        <div class="pip-menu" style="width: 100% !important;">
+                            <div class="pip-list-container pip-scroll">
+                                <md-list class=" pip-ref-list tp0">
+                                    <md-list-item class="pip-ref-list-item divider-bottom" md-ink-ripple 
+                                                ng-if="key != 'toJSON'"
+                                                ng-repeat="(key, value) in $ctrl.settings[$ctrl.selectIndex]">
+                                        <div class="pip-content flex">
+                                            <div class="text-body2 text-overflow" ng-bind-html="key">
+                                               
+                                            </div>
+                                            <p class="pip-subtitle">{{value}}</p>
+                                        </div>
+
+                                        <div class="pip-pic rm0">
+                                            <md-menu>
+                                                <md-button class="md-icon-button" ng-click="$mdOpenMenu()" 
+                                                            aria-label="vdots">
+                                                    <md-icon md-menu-origin md-svg-icon="icons:vdots"></md-icon>
+                                                </md-button>
+                                                <md-menu-content width="3">
+                                                    <md-menu-item>
+                                                        <md-button ng-click="$ctrl.updateKey(key, value)"
+                                                                    aria-label="update ">
+                                                            Update
+                                                        </md-button>
+                                                    </md-menu-item>
+                                                    <md-menu-item ng-click="$ctrl.openDeleteKeyDialog(key, value)">
+                                                        <md-button aria-label="delete">
+                                                            Delete
+                                                        </md-button>
+                                                    </md-menu-item>
+                                                </md-menu-content>
+                                            </md-menu>
+                                        </div>
+                                    </md-list-item>
+                                </md-list>
+                                <div style="margin-bottom: 72px"></div>
+                            </div>
+                        </div>
+                    </div>                       
+                </div>
+
+                <md-fab-speed-dial md-direction="up"
+                       style="z-index: 55"
+                       ng-if="$ctrl.state != 'progress'"
+                       class="md-fab-bottom-right md-fling"
+                       pip-fab-tooltip-visibility="opened" 
+                       pip-fab-show-tooltip="showTooltip" 
+                       md-open="opened">
+        <md-fab-trigger>
+            <md-button aria-label="menu" class="md-fab md-accent">
+                <md-icon md-svg-icon="icons:plus"></md-icon>
+            </md-button>
+        </md-fab-trigger>
+        <md-fab-actions>
+            <md-button aria-label="New section"
+                       class="md-fab md-accent md-mini pip-fab-mini md-raised"
+                       ng-disabled="transaction.busy()"
+                       ng-click="$ctrl.addSection()">
+
+                <md-tooltip md-visible="showTooltip"
+                            md-direction="left">
+                            Section
+                </md-tooltip>
+
+                <md-icon md-svg-icon="icons:pie-chart"></md-icon>
+            </md-button>
+
+            <md-button aria-label="New key"
+                       class="md-fab md-accent md-mini md-raised pip-fab-mini"
+                       ng-disabled="transaction.busy()"
+                       ng-click="$ctrl.addKey()">
+
+                <md-tooltip md-visible="showTooltip"
+                            md-direction="left">
+                            Key
+                </md-tooltip>
+
+                <md-icon md-svg-icon="icons:submenu"></md-icon>
+            </md-button>
+
+        </md-fab-actions>
+    </md-fab-speed-dial>
+
+            </pip-document>
+        </div>
+    </div>
+
+</div>
+
+ <md-fab-speed-dial md-direction="up" 
+                       style="z-index: 55"
+                       ng-if="$ctrl.state != 'progress' && !$ctrl.pipMedia('gt-sm')"
+                       class="md-fab-bottom-right md-fling"
+                       pip-fab-tooltip-visibility="opened" 
+                       pip-fab-show-tooltip="showTooltip" 
+                       md-open="opened">
+        <md-fab-trigger>
+            <md-button aria-label="menu" class="md-fab md-accent">
+                <md-icon md-svg-icon="icons:plus"></md-icon>
+            </md-button>
+        </md-fab-trigger>
+        <md-fab-actions>
+            <md-button aria-label="New section"
+                       class="md-fab md-accent md-mini pip-fab-mini md-raised"
+                       ng-disabled="transaction.busy()"
+                       ng-click="$ctrl.addSection()">
+
+                <md-tooltip md-visible="showTooltip"
+                            md-direction="left">
+                            Section
+                </md-tooltip>
+
+                <md-icon md-svg-icon="icons:pie-chart"></md-icon>
+            </md-button>
+
+            <md-button aria-label="New key"
+                       class="md-fab md-accent md-mini md-raised pip-fab-mini"
+                       ng-disabled="transaction.busy()"
+                       ng-click="$ctrl.addKey()">
+
+                <md-tooltip md-visible="showTooltip"
+                            md-direction="left">
+                            Key
+                </md-tooltip>
+
+                <md-icon md-svg-icon="icons:submenu"></md-icon>
+            </md-button>
+
+        </md-fab-actions>
+    </md-fab-speed-dial>
+
+<pip-dropdown pip-actions="$ctrl.settingsSections" pip-active-index="$ctrl.selectIndex" 
+              pip-change="$ctrl.getSelectDropdown()" 
+              ng-if="!$ctrl.pipMedia('gt-sm') && $ctrl.state != 'progress'"></pip-dropdown>
+<div class="pip-main-menu pip-settings" 
+     ng-if="!$ctrl.pipMedia('gt-sm') && $ctrl.state != 'progress'"> 
+
+    <div class="pip-menu" style="width: 100% !important;">
+        <div class="pip-list-container pip-scroll">
+            <md-list class=" pip-ref-list tp0">
+                <md-list-item class="pip-ref-list-item divider-bottom" md-ink-ripple 
+                            ng-repeat="(key, value) in $ctrl.settings[$ctrl.selectIndex]"
+                            ng-if="key != 'toJSON'">
+                    <div class="pip-content flex">
+                        <div class="text-body2 text-overflow" ng-bind-html="key">
+                        </div>
+                        <p class="pip-subtitle">{{value}}</p>
+                    </div>
+
+                    <div class="pip-pic rm0">
+                        <md-menu>
+                            <md-button class="md-icon-button" ng-click="$mdOpenMenu()">
+                                <md-icon md-menu-origin md-svg-icon="icons:vdots"></md-icon>
+                            </md-button>
+                            <md-menu-content width="3">
+                                <md-menu-item>
+                                    <md-button ng-click="$ctrl.updateKey(key, value)">
+                                        Update
+                                    </md-button>
+                                </md-menu-item>
+                                <md-menu-item ng-click="$ctrl.openDeleteKeyDialog(key, value)">
+                                    <md-button>
+                                        Delete
+                                    </md-button>
+                                </md-menu-item>
+                            </md-menu-content>
+                        </md-menu>
+                    </div>
+                </md-list-item>
+            </md-list>
+            <div style="margin-bottom: 72px"></div>
+        </div>
+    </div>
+</div>
+
+<div class="layout-column layout-align-center-center flex pip-empty" 
+     ng-if="$ctrl.state == 'progress' ">
+    <div class="pip-empty">
+        <img src="images/LoadingState.svg" class="pip-pic">
+        <div class="pip-text">
+            Loading settings
+            <md-progress-linear md-mode="indeterminate" class="tm24"></md-progress-linear>
+        </div>
+    </div>
+ </div>
+
+<md-progress-linear md-mode="indeterminate" style="position: absolute; z-index: 100" 
+                    ng-show="$ctrl.transaction.busy() && $ctrl.state != 'progress'"></md-progress-linear>

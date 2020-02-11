@@ -1,0 +1,84 @@
+<div class="pip-filter-row divider-bottom layout-row pip-search-panel rp0 lp0 pip-filter-search-row flex">
+    <pip-search-row pip-search="$ctrl.search"
+        pip-on-search="$ctrl.searchClick()"
+        xxxng-disabled="$ctrl.transaction.busy()">
+    </pip-search-row>   
+    <div class="pip-search-panel-primary flex layout-row layout-align-start-center">
+        <md-input-container class="md-block">
+            <md-select class="flex" aria-label="Status" ng-model="$ctrl.filter">
+                <md-option ng-value="opt" ng-click="$ctrl.refreshStatistics(opt)" ng-repeat="opt in $ctrl.filters">
+                    {{::opt}}
+                </md-option>
+            </md-select>
+        </md-input-container>
+        <div class="pip-filter-text" ng-if="$ctrl.filter !== $ctrl.TOTAL">
+            for
+        </div>
+        <div ng-if="$ctrl.filter === 'Hourly'">
+            <md-datepicker ng-model="$ctrl.hourlyDate" ng-change="$ctrl.refreshStatistics()">
+            </md-datepicker>
+        </div>
+        <div ng-if="$ctrl.filter === 'Daily'">
+            <pip-date-range pip-date-range-type="weekly" ng-model="$ctrl.dailyDate" pip-changed="$ctrl.updateDate()">
+            </pip-date-range>
+        </div>
+        <div ng-if="$ctrl.filter === 'Monthly'">
+            <pip-date-range pip-date-range-type="yearly" ng-model="$ctrl.monthlyDate" pip-changed="$ctrl.updateDate()">
+            </pip-date-range>
+        </div>
+        <div ng-if="$ctrl.filter === 'Yearly'">
+            <md-input-container class="md-block">
+                <md-select ng-model="$ctrl.yearlyName" class="flex">
+                    <md-option ng-repeat="decade in $ctrl.decades" ng-value="decade.name" ng-click="$ctrl.updateDecade(decade.value)">{{ decade.name }}</md-option>
+                </md-select>
+            </md-input-container>
+        </div>
+        <md-button ng-if="$ctrl.filter !== $ctrl.TOTAL && $ctrl.pipMedia('gt-sm')" class="rm0">
+            <md-icon md-svg-icon="icons:arrow-left" ng-click="$ctrl.previousStep()"></md-icon>
+        </md-button>
+        <md-button ng-if="$ctrl.filter !== $ctrl.TOTAL && $ctrl.pipMedia('gt-sm')" class="lm0 rm0">
+            <md-icon md-svg-icon="icons:date" ng-click="$ctrl.today()"></md-icon>
+        </md-button>
+        <md-button ng-if="$ctrl.filter !== $ctrl.TOTAL && $ctrl.pipMedia('gt-sm')" class="lm0">
+            <md-icon md-svg-icon="icons:arrow-right" ng-click="$ctrl.nextStep()"></md-icon>
+        </md-button>
+    </div>
+</div>
+
+<md-progress-linear md-mode="indeterminate" style="position: absolute;" 
+                    ng-show="$ctrl.transaction.busy() && $ctrl.state != 'progress'"></md-progress-linear>
+<pip-simple ng-if="$ctrl.state === 'data'">
+    <div class="p16">
+        <div ng-repeat="statistics in $ctrl.statisticsGroups" ng-if="$ctrl.filter !== $ctrl.TOTAL" style="margin-bottom: 24px;">
+            <h4>{{ statistics.group }}</h4>
+            <pip-line-chart pip-series="statistics.series" pip-inter-legend="true" ng-if="!statistics.singleChartValue" pip-x-tick-format="$ctrl.chartXTickFormat"></pip-line-chart>
+            <pip-bar-chart pip-series="statistics.series" pip-inter-legend="true" ng-if="statistics.singleChartValue" pip-x-tick-format="$ctrl.chartXTickFormat()"></pip-bar-chart>
+        </div>
+        <div ng-repeat="statistics in $ctrl.statisticsGroups" ng-if="$ctrl.filter === $ctrl.TOTAL" ng-class="{'w-stretch': !$ctrl.pipMedia('gt-sm')}"
+            style="display: inline-block; width: 295px; height:330px; margin-bottom: 24px; margin-right: 16px;">
+            <h4>{{ statistics.group }}</h4>
+            <pip-pie-chart pip-series="statistics.series" pip-centered="true" pip-donut="true" pip-size="250"></pip-pie-chart>
+        </div>
+    </div>
+</pip-simple>
+
+<div class="layout-column layout-align-center-center flex pip-admin-empty" 
+     ng-if="$ctrl.state == 'empty' || $ctrl.state == 'progress'">
+    <div class="pip-empty" ng-if="$ctrl.state == 'empty'">
+
+        <img src="images/EmptyState.svg" class="pip-pic">
+        <div class="pip-text">
+            There is no data right now… <br>
+            Try again later or change filter options
+        </div>
+    </div>
+    <div class="pip-empty" ng-if="$ctrl.state == 'progress'">
+
+        <img src="images/LoadingState.svg" class="pip-pic">
+        <div class="pip-text">
+            Loading statistics
+            <md-progress-linear md-mode="indeterminate"  
+                                class="tm24"></md-progress-linear>
+        </div>
+    </div>
+</div>

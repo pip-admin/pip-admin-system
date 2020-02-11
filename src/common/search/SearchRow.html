@@ -1,0 +1,21 @@
+<div class="pip-search layout-row layout-align-start-center flex">
+    <md-button class="md-icon-button pip-search-button flex-fixed" 
+        ng-click="searchRow.onSearch()" 
+        ng-disabled="searchRow.isDisable()" 
+        aria-label="search">
+        <md-icon md-svg-icon="icons:search"></md-icon>
+    </md-button>
+    <md-input-container md-no-float class="md-block tm8 bm8" ng-disabled="searchRow.isDisable()">
+        <input ng-model="searchRow.localSearch" 
+                placeholder="{{::searchRow.placeholder | translate}}" 
+                ng-keypress="searchRow.onKeyPress($event)" 
+                ng-change="searchRow.onSearch()">
+    </md-input-container>
+    <md-button class="md-icon-button flex-fixed pip-search-clear-button" 
+        ng-if="searchRow.localSearch != '' && searchRow.localSearch" 
+        ng-click="searchRow.onClear()" n
+        ng-disabled="searchRow.isDisable()"
+        aria-label="search">
+        <md-icon md-svg-icon="icons:delete"></md-icon>
+    </md-button>
+</div>

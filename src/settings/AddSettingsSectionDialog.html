@@ -1,0 +1,25 @@
+<!--
+@file Confirmation dialog template
+@copyright Digital Living Software Corp. 2014-2016
+-->
+<md-dialog class="pip-dialog layout-column pip-scroll" width="400" md-theme="{{$ctrl.theme}}">
+    <div class="pip-body">
+        
+      <h3 class="tm0">New section</h3>
+
+      <md-input-container class="md-block flex bm0">
+          <label>Section name</label>
+          <input ng-model="$ctrl.sectionName">
+      </md-input-container>
+    </div>
+
+     <div class="pip-footer">
+        <div>
+            <md-button class="md-accent" ng-click="$ctrl.onCancel()">Cancel</md-button>
+            <md-button class="md-accent" ng-click="$ctrl.onOk()" 
+                ng-disabled="!$ctrl.sectionName">
+                Ok
+            </md-button>
+        </div>
+    </div>
+</md-dialog>

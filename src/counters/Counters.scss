@@ -1,0 +1,10 @@
+pip-counters-panel {
+    position: relative;
+    display: block;
+    height: 100%;
+}
+
+.pip-admin-counters {
+    height: calc(100% - 48px);
+    overflow-y: auto;
+}

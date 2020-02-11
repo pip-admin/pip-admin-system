@@ -1,0 +1,15 @@
+pip-settings-panel {
+    position: relative;
+    display: block;
+    height: 100%;
+    width: 100%;
+}
+
+.pip-admin-settings {
+    height: calc(100% - 48px);
+    overflow-y: auto;
+}
+
+.pip-settings {
+    height: 100%;
+} 

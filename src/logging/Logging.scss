@@ -1,0 +1,38 @@
+pip-logging-panel {
+    position: relative;
+    display: block;
+    height: 100%;
+    width: 100%;
+}
+
+.pip-admin-loggings {
+    height: calc(100% - 48px - 48px);
+    overflow-y: auto;
+}
+
+.pip-admin-small-td {
+      width: 56px;
+      min-width: 56px;
+      md-icon {
+        margin: 0 auto;
+        width: 100%;
+      }
+      text-align: center;
+    }
+    .pip-admin-small-medium-td {
+      min-width: 120px;
+      max-width: 120px;
+      width: 120px;
+      word-break: break-word;
+    }    
+    .pip-admin-medium-td {
+      width: 200px;
+      min-width: 200px;
+      max-width: 200px;
+    }
+    .pip-admin-big-td {
+      width: 600px;
+      min-width: 600px;
+      max-width: 600px;
+
+}

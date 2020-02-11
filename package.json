@@ -1,0 +1,30 @@
+{
+    "name": "pip-admin-system",
+    "version": "2.0.0",
+    "author": "Conceptual Vision Consulting LLC",
+    "description": "System administration tools",
+    "contributors": [
+        {
+            "name": "Sergey Seroukhov",
+            "email": "seroukhov@gmail.com"
+        },
+        {
+            "name": "Katerina Negrienko",
+            "email": "katya@negrienko.com"
+        },
+        {
+            "name": "Anastas Fonotov",
+            "email": "anastasf@gmail.com"
+        }
+    ],
+    "keywords": [
+        "pip",
+        "admin",
+        "shell"
+    ],
+    "noAnalyze": true,
+    "license": "MIT",
+    "private": false,
+    "dependencies": {},
+    "devDependencies": {}
+}
